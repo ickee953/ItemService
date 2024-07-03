@@ -1,15 +1,18 @@
 package com.github.ickee953.micros.items.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 public record Item(
-        @Id @GeneratedValue(strategy = GenerationType.AUTO) UUID id
+        @Id @GeneratedValue(strategy = GenerationType.AUTO) UUID id,
+        String title,
+        @OneToMany(fetch = FetchType.LAZY)
+        List<Category> category,
+        LocalDateTime createdAt
 ) {
 
 }
