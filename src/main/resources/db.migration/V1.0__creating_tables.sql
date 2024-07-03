@@ -1,4 +1,4 @@
-CREATE EXTENSION IF NOT EXIST "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE item(
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
