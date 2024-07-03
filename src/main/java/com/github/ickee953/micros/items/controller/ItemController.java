@@ -1,19 +1,15 @@
 package com.github.ickee953.micros.items.controller;
 
-import com.github.ickee953.micros.items.dto.CategoryDto;
 import com.github.ickee953.micros.items.dto.ItemDto;
-import com.github.ickee953.micros.items.entity.Category;
 import com.github.ickee953.micros.items.entity.Item;
-import com.github.ickee953.micros.items.repository.CategotyRepository;
-import com.github.ickee953.micros.items.repository.ItemRepository;
-import com.github.ickee953.micros.items.service.CategoryService;
+import com.github.ickee953.micros.items.service.ItemService;
+import com.github.ickee953.micros.items.utils.Result;
+import com.github.ickee953.micros.items.utils.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -22,14 +18,18 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ItemController {
 
-    private final ItemRepository itemRepository;
-
-    private final CategoryService categoryService;
+    private final ItemService itemService;
 
     @GetMapping
     public ResponseEntity<Iterable<Item>> allItems() {
-        return ResponseEntity
-                .ok(itemRepository.findAll());
+        Iterable<Item> items = itemService.getAll();
+
+        if( items != null ) {
+            return ResponseEntity.ok(items);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+
     }
 
     @PostMapping
@@ -37,14 +37,7 @@ public class ItemController {
             @RequestBody ItemDto item,
             UriComponentsBuilder uriComponentsBuilder
     ) {
-        List<Category> categories = categoryService.getForItem(item);
-
-        Item created = itemRepository.save(
-                new Item()
-                        .setTitle(item.title())
-                        .setCategory( categories )
-                        .setCreatedAt(LocalDateTime.now())
-        );
+        Item created = itemService.create(item);
 
         return ResponseEntity.created(
                     uriComponentsBuilder.path("{itemId}").build(Map.of("itemId", created.getId())))
@@ -57,40 +50,27 @@ public class ItemController {
             @PathVariable("id") UUID id,
             UriComponentsBuilder uriComponentsBuilder
     ) {
+        Result<Item> result = itemService.replace(id, newItem);
 
-        List<Category> categories = categoryService.getForItem(newItem);
+        if( result.status() == Status.REPLACED ){
+            return ResponseEntity.created(
+                    uriComponentsBuilder.path("{id}").build(Map.of("id", result.data().getId()))
+            ).body(result.data());
+        } else if( result.status() == Status.CREATED ){
+            return ResponseEntity.ok(result.data());
+        }
 
-        return itemRepository.findById(id)
-                .map( item -> {
-                    item.setTitle(newItem.title());
-                    item.setCategory(categories);
-                    item.setCreatedAt(newItem.createdAt());
-
-                    return ResponseEntity.ok(itemRepository.save(item));
-                })
-                .orElseGet(()-> {
-                    Item created = itemRepository.save(
-                            new Item()
-                                    .setTitle(newItem.title())
-                                    .setCategory(categories)
-                                    .setCreatedAt(LocalDateTime.now())
-                    );
-
-                    return ResponseEntity.created(
-                            uriComponentsBuilder.path("{id}").build(Map.of("id", created.getId()))
-                    ).body(created);
-                });
-
+        return ResponseEntity.internalServerError().build();
     }
 
     @GetMapping("{id}")
     public ResponseEntity<Item> get(@PathVariable("id") UUID id) {
-        return ResponseEntity.of(itemRepository.findById(id));
+        return ResponseEntity.of(itemService.get(id));
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<String> delete(@PathVariable(value = "id") UUID id) {
-        itemRepository.deleteById(id);
+        itemService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
