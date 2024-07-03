@@ -28,6 +28,7 @@
 		<java.version>17</java.version>
 		<version.flyway>10.15.0</version.flyway>
 		<version.postgresql>42.7.3</version.postgresql>
+		<version.lombok>1.18.32</version.lombok>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -55,6 +56,13 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>${version.postgresql}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${version.lombok}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
