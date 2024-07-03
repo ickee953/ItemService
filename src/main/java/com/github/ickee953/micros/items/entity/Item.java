@@ -1,7 +1,13 @@
 package com.github.ickee953.micros.items.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
 import java.util.UUID;
 
-public record Item(UUID id) {
+@Entity
+public record Item(
+        @Id UUID id
+) {
 
 }
