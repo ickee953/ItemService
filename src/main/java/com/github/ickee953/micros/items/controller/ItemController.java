@@ -53,7 +53,11 @@ public class ItemController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> replaceItem(@RequestBody ItemDto newItem, @PathVariable("id") UUID id) {
+    public ResponseEntity<?> replaceItem(
+            @RequestBody ItemDto newItem,
+            @PathVariable("id") UUID id,
+            UriComponentsBuilder uriComponentsBuilder
+    ) {
 
         List<Category> categories = categotyRepository.findAllById(
                 newItem.category().stream().map(CategoryDto::id
@@ -67,16 +71,18 @@ public class ItemController {
 
                     return ResponseEntity.ok(itemRepository.save(item));
                 })
-                .orElseGet(()->
-                    ResponseEntity.ok(
-                            itemRepository.save(
-                                    new Item()
-                                            .setTitle(newItem.title())
-                                            .setCategory(categories)
-                                            .setCreatedAt(LocalDateTime.now())
-                            )
-                    )
-                );
+                .orElseGet(()-> {
+                    Item created = itemRepository.save(
+                            new Item()
+                                    .setTitle(newItem.title())
+                                    .setCategory(categories)
+                                    .setCreatedAt(LocalDateTime.now())
+                    );
+
+                    return ResponseEntity.created(
+                            uriComponentsBuilder.path("{id}").build(Map.of("id", created.getId()))
+                    ).body(created);
+                });
 
     }
 
