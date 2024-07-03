@@ -6,6 +6,7 @@ import com.github.ickee953.micros.items.entity.Category;
 import com.github.ickee953.micros.items.entity.Item;
 import com.github.ickee953.micros.items.repository.CategotyRepository;
 import com.github.ickee953.micros.items.repository.ItemRepository;
+import com.github.ickee953.micros.items.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class ItemController {
 
     private final ItemRepository itemRepository;
 
-    private final CategotyRepository categotyRepository;
+    private final CategoryService categoryService;
 
     @GetMapping
     public ResponseEntity<Iterable<Item>> allItems() {
@@ -36,9 +37,7 @@ public class ItemController {
             @RequestBody ItemDto item,
             UriComponentsBuilder uriComponentsBuilder
     ) {
-        List<Category> categories = categotyRepository.findAllById(
-                item.category().stream().map(CategoryDto::id
-        ).toList());
+        List<Category> categories = categoryService.getForItem(item);
 
         Item created = itemRepository.save(
                 new Item()
@@ -59,9 +58,7 @@ public class ItemController {
             UriComponentsBuilder uriComponentsBuilder
     ) {
 
-        List<Category> categories = categotyRepository.findAllById(
-                newItem.category().stream().map(CategoryDto::id
-        ).toList());
+        List<Category> categories = categoryService.getForItem(newItem);
 
         return itemRepository.findById(id)
                 .map( item -> {
