@@ -12,7 +12,7 @@ import com.github.ickee953.micros.items.dto.ItemDto;
 import com.github.ickee953.micros.items.entity.Category;
 import com.github.ickee953.micros.items.entity.Item;
 import com.github.ickee953.micros.items.repository.ItemRepository;
-import com.github.ickee953.micros.core.entity.utils.Result;
+import com.github.ickee953.micros.core.entity.common.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.github.ickee953.micros.core.entity.utils.Status.CREATED;
-import static com.github.ickee953.micros.core.entity.utils.Status.REPLACED;
+import static com.github.ickee953.micros.core.entity.common.Status.CREATED;
+import static com.github.ickee953.micros.core.entity.common.Status.REPLACED;
 
 @Service
 @RequiredArgsConstructor

@@ -7,9 +7,10 @@
 
 package com.github.ickee953.micros.items.service;
 
+import com.github.ickee953.micros.core.entity.common.Status;
 import com.github.ickee953.micros.core.entity.service.EntityService;
 import com.github.ickee953.micros.core.entity.service.RelationEntityService;
-import com.github.ickee953.micros.core.entity.utils.Result;
+import com.github.ickee953.micros.core.entity.common.Result;
 import com.github.ickee953.micros.items.dto.CategoryDto;
 import com.github.ickee953.micros.items.dto.ItemDto;
 import com.github.ickee953.micros.items.entity.Category;
@@ -17,9 +18,14 @@ import com.github.ickee953.micros.items.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static com.github.ickee953.micros.core.entity.common.Status.CREATED;
+import static com.github.ickee953.micros.core.entity.common.Status.REPLACED;
 
 @Service
 @RequiredArgsConstructor
@@ -36,12 +42,24 @@ public class CategoryService implements RelationEntityService<Category, ItemDto>
 
     @Override
     public Iterable<Category> getAll() {
-        return null;
+        return categoryRepository.findAll();
     }
 
     @Override
-    public Category create(CategoryDto object) {
-        return null;
+    public Category create(CategoryDto category) {
+
+        Category newCategory = new Category()
+                .setTitle(category.getTitle())
+                .setCreatedAt(LocalDateTime.now()
+        );
+
+        if( category.getParentCategory() != null ) {
+            newCategory.setParentCategory(
+                    categoryRepository.findById(category.getParentCategory().getId()).orElse(null)
+            );
+        }
+
+        return categoryRepository.save(newCategory);
     }
 
     @Override
@@ -51,11 +69,42 @@ public class CategoryService implements RelationEntityService<Category, ItemDto>
 
     @Override
     public void delete(UUID id) {
-
+        categoryRepository.deleteById(id);
     }
 
     @Override
-    public Result<Category> replace(UUID id, CategoryDto object) {
-        return null;
+    public Result<Category> replace(UUID id, CategoryDto categoryDto) {
+
+        AtomicReference<Status> status = new AtomicReference<>();
+
+        Category newCategory = categoryRepository.findById(id)
+                .map( item -> {
+
+                    status.set(REPLACED);
+
+                    item.setTitle(categoryDto.getTitle());
+                    item.setCreatedAt(categoryDto.getCreatedAt());
+
+                    return categoryRepository.save(item);
+                })
+                .orElseGet( () -> {
+
+                    status.set(CREATED);
+
+                    return categoryRepository.save(
+                            new Category()
+                                    .setTitle(categoryDto.getTitle())
+                                    .setCreatedAt(LocalDateTime.now())
+                    );
+                });
+
+        if( categoryDto.getParentCategory() != null ) {
+            newCategory.setParentCategory(
+                    categoryRepository.findById(categoryDto.getParentCategory().getId()).orElse(null)
+            );
+        }
+
+        return new Result<>(status.get(), newCategory);
+
     }
 }

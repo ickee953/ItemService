@@ -9,7 +9,7 @@ package com.github.ickee953.micros.core.entity.service;
 
 import com.github.ickee953.micros.core.entity.AbstractDto;
 import com.github.ickee953.micros.core.entity.AbstractEntity;
-import com.github.ickee953.micros.core.entity.utils.Result;
+import com.github.ickee953.micros.core.entity.common.Result;
 
 import java.util.Optional;
 import java.util.UUID;
