@@ -1,3 +1,10 @@
+/**
+ * © Panov Vitaly 2024 - All Rights Reserved
+ *
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
 package com.github.ickee953.micros.items.entity;
 
 import com.github.ickee953.micros.core.entity.AbstractEntity;
@@ -8,7 +15,6 @@ import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Accessors(chain = true)

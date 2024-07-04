@@ -1,3 +1,10 @@
+/**
+ * © Panov Vitaly 2024 - All Rights Reserved
+ *
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
 package com.github.ickee953.micros.items.dto;
 
 import com.github.ickee953.micros.core.entity.AbstractDto;
@@ -15,4 +22,5 @@ public class CategoryDto extends AbstractDto {
     private CategoryDto parentCategory;
 
     private LocalDateTime createdAt;
+
 }
