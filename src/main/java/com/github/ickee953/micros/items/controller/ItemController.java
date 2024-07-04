@@ -1,10 +1,10 @@
 package com.github.ickee953.micros.items.controller;
 
+import com.github.ickee953.micros.core.entity.service.EntityService;
 import com.github.ickee953.micros.items.dto.ItemDto;
 import com.github.ickee953.micros.items.entity.Item;
-import com.github.ickee953.micros.items.service.ItemService;
-import com.github.ickee953.micros.items.utils.Result;
-import com.github.ickee953.micros.items.utils.Status;
+import com.github.ickee953.micros.core.entity.utils.Result;
+import com.github.ickee953.micros.core.entity.utils.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +18,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ItemController {
 
-    private final ItemService itemService;
+    private final EntityService<Item, ItemDto> itemService;
 
     @GetMapping
     public ResponseEntity<Iterable<Item>> allItems() {
