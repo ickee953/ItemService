@@ -24,7 +24,9 @@ public class Item extends AbstractEntity {
 
         private String title;
 
-        @OneToMany(fetch = FetchType.LAZY)
+        private String description;
+
+        @ManyToMany(fetch = FetchType.LAZY)
         private List<Category> category;
 
         private LocalDateTime createdAt;
