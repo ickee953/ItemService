@@ -9,7 +9,6 @@ package com.github.ickee953.micros.core.entity.service;
 
 import com.github.ickee953.micros.core.entity.AbstractDto;
 import com.github.ickee953.micros.core.entity.AbstractEntity;
-import com.github.ickee953.micros.items.entity.Item;
 import com.github.ickee953.micros.core.entity.utils.Result;
 
 import java.util.Optional;
@@ -19,7 +18,7 @@ public interface EntityService<T extends AbstractEntity, V extends AbstractDto> 
 
     Iterable<T> getAll();
 
-    Item create(V object);
+    T create(V object);
 
     Optional<T> get(UUID id);
 
