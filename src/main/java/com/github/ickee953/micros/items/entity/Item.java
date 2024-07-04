@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Collection;
 
 @Entity
 @Accessors(chain = true)
@@ -27,7 +27,7 @@ public class Item extends AbstractEntity {
         private String description;
 
         @ManyToMany(fetch = FetchType.LAZY)
-        private List<Category> category;
+        private Collection<Category> category;
 
         private LocalDateTime createdAt;
 }

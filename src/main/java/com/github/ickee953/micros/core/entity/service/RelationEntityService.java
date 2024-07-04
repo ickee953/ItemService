@@ -14,6 +14,6 @@ import java.util.List;
 
 public interface RelationEntityService<T extends AbstractEntity, V extends AbstractDto> {
 
-    List<T> getForObject(V object);
+    Iterable<T> getForObject(V object);
 
 }

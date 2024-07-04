@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -33,12 +33,11 @@ public class CategoryService implements RelationEntityService<Category, ItemDto>
 
     private final CategoryRepository categoryRepository;
 
-    public List<Category> getForObject(ItemDto item) {
-        return categoryRepository.findAllById(
-                item.getCategory().stream().map(CategoryDto::getId
-                ).toList());
-    }
+    public Collection<Category> getForObject(ItemDto item) {
 
+        return categoryRepository.findAllById(item.getCategory().stream().map(CategoryDto::getId).toList());
+
+    }
 
     @Override
     public Iterable<Category> getAll() {

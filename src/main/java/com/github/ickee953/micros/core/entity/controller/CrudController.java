@@ -58,11 +58,11 @@ public abstract class CrudController<T extends AbstractEntity, D extends Abstrac
         Result<T> result = entityService.replace(id, dto);
 
         if( result.status() == Status.REPLACED ){
+            return ResponseEntity.noContent().build();
+        } else if( result.status() == Status.CREATED ){
             return ResponseEntity.created(
                     uriComponentsBuilder.path("{id}").build(Map.of("id", result.data().getId()))
             ).body(result.data());
-        } else if( result.status() == Status.CREATED ){
-            return ResponseEntity.ok(result.data());
         }
 
         return ResponseEntity.internalServerError().build();

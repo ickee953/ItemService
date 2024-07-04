@@ -17,9 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static com.github.ickee953.micros.core.entity.common.Status.CREATED;
 import static com.github.ickee953.micros.core.entity.common.Status.REPLACED;
@@ -40,7 +38,7 @@ public class ItemService implements EntityService<Item, ItemDto> {
     @Override
     public Item create(ItemDto item) {
 
-        List<Category> categories = categoryService.getForObject(item);
+        Collection<Category> categories = categoryService.getForObject(item);
 
         return itemRepository.save(
                 new Item()
@@ -62,7 +60,8 @@ public class ItemService implements EntityService<Item, ItemDto> {
 
     @Override
     public Result<Item> replace(UUID id, ItemDto newItem) {
-        List<Category> categories = categoryService.getForObject(newItem);
+
+        Collection<Category> categories = categoryService.getForObject(newItem);
 
         return itemRepository.findById(id)
                 .map( item -> {
