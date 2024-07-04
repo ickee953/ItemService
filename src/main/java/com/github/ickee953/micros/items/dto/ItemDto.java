@@ -20,6 +20,8 @@ public class ItemDto extends AbstractDto {
 
     private String title;
 
+    private String description;
+
     private List<CategoryDto> category;
 
     private LocalDateTime createdAt;
