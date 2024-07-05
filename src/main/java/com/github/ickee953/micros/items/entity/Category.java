@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Collection;
 
 @Entity
 @Accessors(chain = true)
@@ -32,8 +32,8 @@ public class Category extends AbstractEntity {
         @JoinColumn(name = "parent_category_id")
         private Category parentCategory;
 
-        //@OneToMany(mappedBy = "parentCategory")
-        //private List<Category> childCategory;
+        @OneToMany(mappedBy = "parentCategory")
+        private Collection<Category> childCategory;
 
         private LocalDateTime createdAt;
 }

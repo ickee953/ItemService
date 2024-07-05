@@ -26,6 +26,8 @@ public class Item extends AbstractEntity {
 
         private String description;
 
+        private String titlePic;
+
         @ManyToMany(fetch = FetchType.LAZY)
         private Collection<Category> category;
 
