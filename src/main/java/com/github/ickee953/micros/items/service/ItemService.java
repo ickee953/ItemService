@@ -31,7 +31,7 @@ public class ItemService implements EntityService<Item, ItemDto> {
     private final CategoryService categoryService;
 
     @Override
-    public Iterable<Item> getAll() {
+    public Collection<Item> getAll() {
         return itemRepository.findAll();
     }
 

@@ -40,7 +40,7 @@ public class CategoryService implements RelationEntityService<Category, ItemDto>
     }
 
     @Override
-    public Iterable<Category> getAll() {
+    public Collection<Category> getAll() {
         return categoryRepository.findAll();
     }
 

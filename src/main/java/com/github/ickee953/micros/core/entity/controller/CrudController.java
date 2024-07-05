@@ -15,6 +15,7 @@ import com.github.ickee953.micros.core.entity.common.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Map;
@@ -26,7 +27,7 @@ public abstract class CrudController<T extends AbstractEntity, D extends Abstrac
     private final EntityService<T, D> entityService;
 
     @GetMapping
-    public ResponseEntity<Iterable<T>> allItems() {
+    public ResponseEntity<Iterable<T>> all() {
         Iterable<T> items = entityService.getAll();
 
         if( items != null ) {
@@ -38,31 +39,40 @@ public abstract class CrudController<T extends AbstractEntity, D extends Abstrac
     }
 
     @PostMapping
-    public ResponseEntity<?> createItem(
-            @RequestBody D dto,
-            UriComponentsBuilder uriComponentsBuilder
+    public ResponseEntity<?> create(
+            @RequestBody D dto
     ) {
         T created = entityService.create(dto);
 
-        return ResponseEntity.created(
-                        uriComponentsBuilder.path("{itemId}").build(Map.of("itemId", created.getId())))
+        return ResponseEntity
+                .created(
+                    ServletUriComponentsBuilder.fromCurrentRequest()
+                        .pathSegment("{itemId}")
+                        .buildAndExpand(Map.of("itemId", created.getId()))
+                        .toUri()
+                )
                 .body(created);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> replaceItem(
+    public ResponseEntity<?> replace(
             @RequestBody D dto,
-            @PathVariable("id") UUID id,
-            UriComponentsBuilder uriComponentsBuilder
+            @PathVariable("id") UUID id
     ) {
         Result<T> result = entityService.replace(id, dto);
 
         if( result.status() == Status.REPLACED ){
             return ResponseEntity.noContent().build();
         } else if( result.status() == Status.CREATED ){
-            return ResponseEntity.created(
-                    uriComponentsBuilder.path("{id}").build(Map.of("id", result.data().getId()))
-            ).body(result.data());
+
+            return ResponseEntity
+                    .created(
+                        ServletUriComponentsBuilder.fromCurrentRequest()
+                                .pathSegment("{id}")
+                                .buildAndExpand(Map.of("id", result.data().getId()))
+                                .toUri()
+            )
+            .body(result.data());
         }
 
         return ResponseEntity.internalServerError().build();
