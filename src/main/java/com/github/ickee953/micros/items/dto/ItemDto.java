@@ -20,11 +20,11 @@ import java.util.List;
 @Data
 public class ItemDto extends AbstractDto {
 
-    @NotNull(message = "")
-    @Size(min = 3, max = 50, message = "")
+    @NotNull(message = "{errors.title.not_null}")
+    @Size(min = 3, max = 50, message = "{errors.title.size}")
     private String title;
 
-    @Size(max = 1000, message = "")
+    @Size(max = 1000, message = "{errors.description.size}")
     private String description;
 
     private List<CategoryDto> categories;

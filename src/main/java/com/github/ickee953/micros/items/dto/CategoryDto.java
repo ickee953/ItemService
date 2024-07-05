@@ -8,6 +8,7 @@
 package com.github.ickee953.micros.items.dto;
 
 import com.github.ickee953.micros.core.entity.AbstractDto;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,7 +19,8 @@ import java.time.LocalDateTime;
 @Data
 public class CategoryDto extends AbstractDto {
 
-    @Size(min = 3, max = 50, message = "")
+    @NotNull(message = "{errors.title.not_null}")
+    @Size(min = 3, max = 50, message = "{errors.title.size}")
     private String title;
 
     private CategoryDto parentCategory;

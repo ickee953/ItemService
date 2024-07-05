@@ -12,12 +12,19 @@ import com.github.ickee953.micros.core.entity.AbstractEntity;
 import com.github.ickee953.micros.core.entity.service.EntityService;
 import com.github.ickee953.micros.core.entity.common.Result;
 import com.github.ickee953.micros.core.entity.common.Status;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -25,6 +32,9 @@ import java.util.UUID;
 public abstract class CrudController<T extends AbstractEntity, D extends AbstractDto> {
 
     private final EntityService<T, D> entityService;
+
+    @Autowired
+    protected MessageSource messageSource;
 
     @GetMapping
     public ResponseEntity<Iterable<T>> all() {
@@ -40,42 +50,73 @@ public abstract class CrudController<T extends AbstractEntity, D extends Abstrac
 
     @PostMapping
     public ResponseEntity<?> create(
-            @RequestBody D dto
+            @Valid @RequestBody D dto,
+            BindingResult bindingResult, Locale locale
     ) {
-        T created = entityService.create(dto);
+        if( bindingResult.hasErrors() ) {
+            ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+                            messageSource.getMessage("errors.validation", new Object[0],
+                                    "errors.validation", locale));
 
-        return ResponseEntity
-                .created(
-                    ServletUriComponentsBuilder.fromCurrentRequest()
-                        .pathSegment("{itemId}")
-                        .buildAndExpand(Map.of("itemId", created.getId()))
-                        .toUri()
-                )
-                .body(created);
+            problemDetail.setProperty("errors",
+                    bindingResult.getAllErrors().stream()
+                            .map(ObjectError::getDefaultMessage)
+                            .toList());
+
+            return ResponseEntity.badRequest()
+                    .body(problemDetail);
+        } else {
+            T created = entityService.create(dto);
+
+            return ResponseEntity
+                    .created(
+                            ServletUriComponentsBuilder.fromCurrentRequest()
+                                    .pathSegment("{itemId}")
+                                    .buildAndExpand(Map.of("itemId", created.getId()))
+                                    .toUri()
+                    )
+                    .body(created);
+        }
     }
 
     @PutMapping("{id}")
     public ResponseEntity<?> replace(
-            @RequestBody D dto,
-            @PathVariable("id") UUID id
+            @PathVariable("id") UUID id,
+            @Valid @RequestBody D dto,
+            BindingResult bindingResult, Locale locale
     ) {
-        Result<T> result = entityService.replace(id, dto);
+        if( bindingResult.hasErrors() ) {
+            ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+                    messageSource.getMessage("errors.validation", new Object[0],
+                            "errors.validation", locale));
 
-        if( result.status() == Status.REPLACED ){
-            return ResponseEntity.noContent().build();
-        } else if( result.status() == Status.CREATED ){
+            problemDetail.setProperty("errors",
+                    bindingResult.getAllErrors().stream()
+                            .map(ObjectError::getDefaultMessage)
+                            .toList());
 
-            return ResponseEntity
-                    .created(
-                        ServletUriComponentsBuilder.fromCurrentRequest()
-                                .pathSegment("{id}")
-                                .buildAndExpand(Map.of("id", result.data().getId()))
-                                .toUri()
-            )
-            .body(result.data());
+            return ResponseEntity.badRequest()
+                    .body(problemDetail);
+        } else {
+
+            Result<T> result = entityService.replace(id, dto);
+
+            if (result.status() == Status.REPLACED) {
+                return ResponseEntity.noContent().build();
+            } else if (result.status() == Status.CREATED) {
+
+                return ResponseEntity
+                        .created(
+                                ServletUriComponentsBuilder.fromCurrentRequest()
+                                        .pathSegment("{id}")
+                                        .buildAndExpand(Map.of("id", result.data().getId()))
+                                        .toUri()
+                        )
+                        .body(result.data());
+            }
+
+            return ResponseEntity.internalServerError().build();
         }
-
-        return ResponseEntity.internalServerError().build();
     }
 
     @GetMapping("{id}")
