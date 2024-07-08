@@ -13,7 +13,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -28,7 +27,5 @@ public class ItemDto extends AbstractDto {
     private String description;
 
     private List<CategoryDto> categories;
-
-    private LocalDateTime createdAt;
 
 }

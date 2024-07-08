@@ -45,7 +45,6 @@ public class ItemService implements EntityService<Item, ItemDto> {
                         .setTitle(item.getTitle())
                         .setDescription(item.getDescription())
                         .setCategory( categories )
-                        .setCreatedAt(LocalDateTime.now())
         );
     }
 
@@ -69,7 +68,6 @@ public class ItemService implements EntityService<Item, ItemDto> {
                     item.setTitle(newItem.getTitle());
                     item.setDescription(newItem.getDescription());
                     item.setCategory(categories);
-                    item.setCreatedAt(newItem.getCreatedAt());
 
                     return new Result<>(REPLACED, itemRepository.save(item));
                 })
@@ -80,7 +78,6 @@ public class ItemService implements EntityService<Item, ItemDto> {
                                 .setTitle(newItem.getTitle())
                                 .setDescription(newItem.getDescription())
                                 .setCategory(categories)
-                                .setCreatedAt(LocalDateTime.now())
                         )
                 ));
     }

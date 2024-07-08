@@ -48,8 +48,7 @@ public class CategoryService implements RelationEntityService<Category, ItemDto>
     public Category create(CategoryDto category) {
 
         Category newCategory = new Category()
-                .setTitle(category.getTitle())
-                .setCreatedAt(LocalDateTime.now()
+                .setTitle(category.getTitle()
         );
 
         if( category.getParentCategory() != null ) {
@@ -63,7 +62,7 @@ public class CategoryService implements RelationEntityService<Category, ItemDto>
 
     @Override
     public Optional<Category> get(UUID id) {
-        return Optional.empty();
+        return categoryRepository.findById(id);
     }
 
     @Override
@@ -82,7 +81,6 @@ public class CategoryService implements RelationEntityService<Category, ItemDto>
                     status.set(REPLACED);
 
                     item.setTitle(categoryDto.getTitle());
-                    item.setCreatedAt(categoryDto.getCreatedAt());
 
                     return categoryRepository.save(item);
                 })
@@ -93,7 +91,6 @@ public class CategoryService implements RelationEntityService<Category, ItemDto>
                     return categoryRepository.save(
                             new Category()
                                     .setTitle(categoryDto.getTitle())
-                                    .setCreatedAt(LocalDateTime.now())
                     );
                 });
 

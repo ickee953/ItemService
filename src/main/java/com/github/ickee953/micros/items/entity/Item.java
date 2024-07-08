@@ -13,23 +13,25 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 
 @Entity
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @Data
+@Table(name = "item")
 public class Item extends AbstractEntity {
 
+        @Column(name = "title")
         private String title;
 
+        @Column(name = "description")
         private String description;
 
+        @Column(name ="picture_path")
         private String titlePic;
 
         @ManyToMany(fetch = FetchType.LAZY)
         private Collection<Category> category;
 
-        private LocalDateTime createdAt;
 }

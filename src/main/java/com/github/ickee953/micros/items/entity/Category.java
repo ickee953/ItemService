@@ -15,7 +15,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 
 @Entity
@@ -24,16 +23,17 @@ import java.util.Collection;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "category")
 public class Category extends AbstractEntity {
 
+        @Column(name = "title", unique = true)
         private String title;
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "parent_category_id")
         private Category parentCategory;
 
-        @OneToMany(mappedBy = "parentCategory")
+        @OneToMany(mappedBy = "parentCategory", fetch = FetchType.LAZY)
         private Collection<Category> childCategory;
 
-        private LocalDateTime createdAt;
 }
