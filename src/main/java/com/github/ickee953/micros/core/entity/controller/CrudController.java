@@ -113,7 +113,7 @@ public abstract class CrudController<T extends AbstractEntity<D>, D extends Abst
                         .created(
                                 ServletUriComponentsBuilder.fromCurrentRequest()
                                         .pathSegment("{id}")
-                                        .buildAndExpand(Map.of("id", result.data().getId()))
+                                        .buildAndExpand(Map.of("id", created.getId()))
                                         .toUri()
                         )
                         .body(created.forResponse());
@@ -124,8 +124,15 @@ public abstract class CrudController<T extends AbstractEntity<D>, D extends Abst
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<T> get(@PathVariable("id") UUID id) {
-        return ResponseEntity.of(entityService.get(id));
+    public ResponseEntity<D> get(@PathVariable("id") UUID id) {
+
+        Optional<T> entity = entityService.get(id);
+
+        return entity.map(
+                e -> ResponseEntity.ok(e.forResponse())
+            ).orElseGet(() ->
+                ResponseEntity.noContent().build()
+            );
     }
 
     @DeleteMapping("{id}")
