@@ -29,14 +29,19 @@ public class ItemDto extends AbstractDto {
 
     private List<CategoryDto> categories;
 
-    public ItemDto(UUID id, String title, String description, List<CategoryDto> catgories) {
+    public ItemDto(String title, String description) {
+        super();
 
+        setTitle(title);
+        setDescription(description);
+    }
+
+    public ItemDto(UUID id, String title, String description, List<CategoryDto> catgories) {
         super();
 
         setId(id);
         setTitle(title);
         setDescription(description);
         setCategories(catgories);
-
     }
 }
