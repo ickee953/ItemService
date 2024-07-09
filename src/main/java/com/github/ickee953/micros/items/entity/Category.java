@@ -7,7 +7,6 @@
 
 package com.github.ickee953.micros.items.entity;
 
-import com.github.ickee953.micros.core.entity.AbstractDto;
 import com.github.ickee953.micros.core.entity.AbstractEntity;
 import com.github.ickee953.micros.items.dto.CategoryDto;
 import jakarta.persistence.*;

@@ -44,9 +44,9 @@ public abstract class CrudController<T extends AbstractEntity<D>, D extends Abst
             items.forEach(entity -> responseList.add(entity.forResponse()));
 
             return ResponseEntity.ok(responseList);
-        } else {
-            return ResponseEntity.notFound().build();
         }
+
+        return ResponseEntity.notFound().build();
 
     }
 
