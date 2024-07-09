@@ -7,7 +7,9 @@
 
 package com.github.ickee953.micros.items.entity;
 
+import com.github.ickee953.micros.core.entity.AbstractDto;
 import com.github.ickee953.micros.core.entity.AbstractEntity;
+import com.github.ickee953.micros.items.dto.CategoryDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,7 +26,7 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "category")
-public class Category extends AbstractEntity {
+public class Category extends AbstractEntity<CategoryDto> {
 
         @Column(name = "title", unique = true)
         private String title;
@@ -36,4 +38,12 @@ public class Category extends AbstractEntity {
         @OneToMany(mappedBy = "parentCategory", fetch = FetchType.LAZY)
         private Collection<Category> childCategory;
 
+        @Override
+        public CategoryDto forResponse() {
+                return new CategoryDto(
+                        getId(),
+                        getTitle(),
+                        parentCategory == null ? null : parentCategory.forResponse()
+                );
+        }
 }

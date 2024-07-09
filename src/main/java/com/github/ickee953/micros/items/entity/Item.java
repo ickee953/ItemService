@@ -8,6 +8,7 @@
 package com.github.ickee953.micros.items.entity;
 
 import com.github.ickee953.micros.core.entity.AbstractEntity;
+import com.github.ickee953.micros.items.dto.ItemDto;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,7 +21,7 @@ import java.util.Collection;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Table(name = "item")
-public class Item extends AbstractEntity {
+public class Item extends AbstractEntity<ItemDto> {
 
         @Column(name = "title")
         private String title;
@@ -34,4 +35,13 @@ public class Item extends AbstractEntity {
         @ManyToMany(fetch = FetchType.LAZY)
         private Collection<Category> category;
 
+        @Override
+        public ItemDto forResponse() {
+                return new ItemDto(
+                        getId(),
+                        getTitle(),
+                        getDescription(),
+                        category.stream().map(Category::forResponse).toList()
+                );
+        }
 }

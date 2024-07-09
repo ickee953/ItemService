@@ -13,6 +13,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.UUID;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class CategoryDto extends AbstractDto {
@@ -23,4 +25,13 @@ public class CategoryDto extends AbstractDto {
 
     private CategoryDto parentCategory;
 
+    public CategoryDto(UUID id, String title, CategoryDto parentCategory) {
+
+        super();
+
+        setId(id);
+        setTitle(title);
+        setParentCategory(parentCategory);
+
+    }
 }

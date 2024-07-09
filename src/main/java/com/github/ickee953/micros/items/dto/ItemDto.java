@@ -14,6 +14,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.List;
+import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -28,4 +29,14 @@ public class ItemDto extends AbstractDto {
 
     private List<CategoryDto> categories;
 
+    public ItemDto(UUID id, String title, String description, List<CategoryDto> catgories) {
+
+        super();
+
+        setId(id);
+        setTitle(title);
+        setDescription(description);
+        setCategories(catgories);
+
+    }
 }

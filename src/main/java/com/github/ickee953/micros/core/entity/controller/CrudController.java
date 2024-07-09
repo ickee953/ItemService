@@ -24,12 +24,10 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RequiredArgsConstructor
-public abstract class CrudController<T extends AbstractEntity, D extends AbstractDto> {
+public abstract class CrudController<T extends AbstractEntity<D>, D extends AbstractDto> {
 
     private final EntityService<T, D> entityService;
 
@@ -37,11 +35,15 @@ public abstract class CrudController<T extends AbstractEntity, D extends Abstrac
     protected MessageSource messageSource;
 
     @GetMapping
-    public ResponseEntity<Iterable<T>> all() {
+    public ResponseEntity<Iterable<D>> all() {
         Iterable<T> items = entityService.getAll();
 
         if( items != null ) {
-            return ResponseEntity.ok(items);
+
+            List<D> responseList = new LinkedList<>();
+            items.forEach(entity -> responseList.add(entity.forResponse()));
+
+            return ResponseEntity.ok(responseList);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -75,7 +77,7 @@ public abstract class CrudController<T extends AbstractEntity, D extends Abstrac
                                     .buildAndExpand(Map.of("itemId", created.getId()))
                                     .toUri()
                     )
-                    .body(created);
+                    .body(created.forResponse());
         }
     }
 
@@ -105,6 +107,8 @@ public abstract class CrudController<T extends AbstractEntity, D extends Abstrac
                 return ResponseEntity.noContent().build();
             } else if (result.status() == Status.CREATED) {
 
+                T created = result.data();
+
                 return ResponseEntity
                         .created(
                                 ServletUriComponentsBuilder.fromCurrentRequest()
@@ -112,7 +116,7 @@ public abstract class CrudController<T extends AbstractEntity, D extends Abstrac
                                         .buildAndExpand(Map.of("id", result.data().getId()))
                                         .toUri()
                         )
-                        .body(result.data());
+                        .body(created.forResponse());
             }
 
             return ResponseEntity.internalServerError().build();
