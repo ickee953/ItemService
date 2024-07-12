@@ -7,19 +7,20 @@
 
 package com.github.ickee953.micros.items.service;
 
-import com.github.ickee953.micros.core.entity.service.EntityService;
+import com.github.ickee953.micros.core.service.EntityService;
 import com.github.ickee953.micros.items.dto.ItemDto;
 import com.github.ickee953.micros.items.entity.Category;
 import com.github.ickee953.micros.items.entity.Item;
 import com.github.ickee953.micros.items.repository.ItemRepository;
-import com.github.ickee953.micros.core.entity.common.Result;
+import com.github.ickee953.micros.core.common.Result;
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static com.github.ickee953.micros.core.entity.common.Status.CREATED;
-import static com.github.ickee953.micros.core.entity.common.Status.REPLACED;
+import static com.github.ickee953.micros.core.common.Status.CREATED;
+import static com.github.ickee953.micros.core.common.Status.REPLACED;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +29,10 @@ public class ItemService implements EntityService<Item, ItemDto> {
     private final ItemRepository itemRepository;
 
     private final CategoryService categoryService;
+
+    private final KafkaTemplate<String, String> kafkaTemplate;
+
+    private static final String KAFKA_TOPIC = "pictures-api-topic";
 
     @Override
     public Collection<Item> getAll() {
@@ -39,12 +44,15 @@ public class ItemService implements EntityService<Item, ItemDto> {
 
         Collection<Category> categories = categoryService.getForObject(item);
 
-        return itemRepository.save(
-                new Item()
-                        .setTitle(item.getTitle())
-                        .setDescription(item.getDescription())
-                        .setCategory( categories )
-        );
+        kafkaTemplate.send(KAFKA_TOPIC, "test_key", "test_data");
+
+        Item created = new Item()
+                .setTitle(item.getTitle())
+                .setTitlePic("test_path")
+                .setDescription(item.getDescription())
+                .setCategory( categories );
+
+        return itemRepository.save(created);
     }
 
     @Override

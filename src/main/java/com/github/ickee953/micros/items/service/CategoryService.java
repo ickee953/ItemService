@@ -7,10 +7,10 @@
 
 package com.github.ickee953.micros.items.service;
 
-import com.github.ickee953.micros.core.entity.common.Status;
-import com.github.ickee953.micros.core.entity.service.EntityService;
-import com.github.ickee953.micros.core.entity.service.RelationEntityService;
-import com.github.ickee953.micros.core.entity.common.Result;
+import com.github.ickee953.micros.core.common.Status;
+import com.github.ickee953.micros.core.service.EntityService;
+import com.github.ickee953.micros.core.service.RelationEntityService;
+import com.github.ickee953.micros.core.common.Result;
 import com.github.ickee953.micros.items.dto.CategoryDto;
 import com.github.ickee953.micros.items.dto.ItemDto;
 import com.github.ickee953.micros.items.entity.Category;
@@ -23,8 +23,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.github.ickee953.micros.core.entity.common.Status.CREATED;
-import static com.github.ickee953.micros.core.entity.common.Status.REPLACED;
+import static com.github.ickee953.micros.core.common.Status.CREATED;
+import static com.github.ickee953.micros.core.common.Status.REPLACED;
 
 @Service
 @RequiredArgsConstructor

@@ -7,7 +7,7 @@
 
 package com.github.ickee953.micros.items.controller;
 
-import com.github.ickee953.micros.core.entity.controller.CrudController;
+import com.github.ickee953.micros.core.controller.CrudController;
 import com.github.ickee953.micros.items.dto.ItemDto;
 import com.github.ickee953.micros.items.entity.Item;
 import com.github.ickee953.micros.items.service.ItemService;

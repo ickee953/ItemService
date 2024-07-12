@@ -5,8 +5,8 @@
  * Proprietary and confidential
  */
 
-package com.github.ickee953.micros.core.entity.common;
+package com.github.ickee953.micros.core.common;
 
-public record Result<T>(Status status, T data) {
-
+public enum Status {
+    CREATED, REPLACED
 }

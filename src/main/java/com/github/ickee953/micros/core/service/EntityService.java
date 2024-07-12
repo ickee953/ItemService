@@ -5,11 +5,11 @@
  * Proprietary and confidential
  */
 
-package com.github.ickee953.micros.core.entity.service;
+package com.github.ickee953.micros.core.service;
 
 import com.github.ickee953.micros.core.entity.AbstractDto;
 import com.github.ickee953.micros.core.entity.AbstractEntity;
-import com.github.ickee953.micros.core.entity.common.Result;
+import com.github.ickee953.micros.core.common.Result;
 
 import java.util.Optional;
 import java.util.UUID;

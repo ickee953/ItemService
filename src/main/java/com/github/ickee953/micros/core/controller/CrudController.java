@@ -5,13 +5,13 @@
  * Proprietary and confidential
  */
 
-package com.github.ickee953.micros.core.entity.controller;
+package com.github.ickee953.micros.core.controller;
 
 import com.github.ickee953.micros.core.entity.AbstractDto;
 import com.github.ickee953.micros.core.entity.AbstractEntity;
-import com.github.ickee953.micros.core.entity.service.EntityService;
-import com.github.ickee953.micros.core.entity.common.Result;
-import com.github.ickee953.micros.core.entity.common.Status;
+import com.github.ickee953.micros.core.common.Result;
+import com.github.ickee953.micros.core.service.EntityService;
+import com.github.ickee953.micros.core.common.Status;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
