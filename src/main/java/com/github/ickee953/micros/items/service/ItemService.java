@@ -18,6 +18,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 import static com.github.ickee953.micros.core.common.Status.CREATED;
 import static com.github.ickee953.micros.core.common.Status.REPLACED;
@@ -32,7 +33,7 @@ public class ItemService implements EntityService<Item, ItemDto> {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-    private static final String KAFKA_TOPIC = "pictures-api-topic";
+    private static final String KAFKA_TOPIC = "file-upload-topic";
 
     @Override
     public Collection<Item> getAll() {
@@ -44,13 +45,18 @@ public class ItemService implements EntityService<Item, ItemDto> {
 
         Collection<Category> categories = categoryService.getForObject(item);
 
-        kafkaTemplate.send(KAFKA_TOPIC, "test_key", "test_data");
-
         Item created = new Item()
                 .setTitle(item.getTitle())
-                .setTitlePic("test_path")
                 .setDescription(item.getDescription())
                 .setCategory( categories );
+
+        assert created != null;
+
+        try {
+            kafkaTemplate.send(KAFKA_TOPIC, "test_key", "test_data").get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
 
         return itemRepository.save(created);
     }

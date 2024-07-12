@@ -12,12 +12,14 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NoArgsConstructor
 public class ItemDto extends AbstractDto {
 
     @NotNull(message = "{errors.title.not_null}")
