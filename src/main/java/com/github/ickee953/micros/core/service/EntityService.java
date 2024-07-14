@@ -14,16 +14,16 @@ import com.github.ickee953.micros.core.common.Result;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface EntityService<T extends AbstractEntity, V extends AbstractDto> {
+public interface EntityService<T extends AbstractEntity<D>, D extends AbstractDto> {
 
     Iterable<T> getAll();
 
-    T create(V object);
+    T create(D object);
 
     Optional<T> get(UUID id);
 
     void delete(UUID id);
 
-    Result<T> replace(UUID id, V object);
+    Result<T> replace(UUID id, D object);
 
 }

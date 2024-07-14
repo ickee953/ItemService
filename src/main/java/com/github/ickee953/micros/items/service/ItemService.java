@@ -9,13 +9,17 @@ package com.github.ickee953.micros.items.service;
 
 import com.github.ickee953.micros.core.service.EntityService;
 import com.github.ickee953.micros.items.dto.ItemDto;
+import com.github.ickee953.micros.items.dto.ItemUploadDto;
 import com.github.ickee953.micros.items.entity.Category;
 import com.github.ickee953.micros.items.entity.Item;
 import com.github.ickee953.micros.items.repository.ItemRepository;
 import com.github.ickee953.micros.core.common.Result;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -25,14 +29,15 @@ import static com.github.ickee953.micros.core.common.Status.REPLACED;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ItemService implements EntityService<Item, ItemDto> {
 
     private final ItemRepository itemRepository;
 
     private final CategoryService categoryService;
 
-    private final KafkaTemplate<String, String> kafkaTemplate;
-
+    private final KafkaTemplate<UUID, MultipartFile> kafkaTemplate;
+    
     private static final String KAFKA_TOPIC = "file-upload-topic";
 
     @Override
@@ -41,24 +46,31 @@ public class ItemService implements EntityService<Item, ItemDto> {
     }
 
     @Override
+    @Transactional(rollbackOn = {InterruptedException.class, ExecutionException.class})
     public Item create(ItemDto item) {
 
         Collection<Category> categories = categoryService.getForObject(item);
 
-        Item created = new Item()
-                .setTitle(item.getTitle())
-                .setDescription(item.getDescription())
-                .setCategory( categories );
+        Item created = itemRepository.save(
+                new Item()
+                        .setTitle(item.getTitle())
+                        .setDescription(item.getDescription())
+                        .setCategory( categories )
+        );
 
-        assert created != null;
+        if( item instanceof ItemUploadDto ){
+            try {
+                kafkaTemplate.send(KAFKA_TOPIC, created.getId(), ((ItemUploadDto) item).getPicture()).get();
+            } catch (InterruptedException | ExecutionException e) {
+                log.error(String.format(
+                        "Kafka send message error in topic: %s with key: %s", KAFKA_TOPIC, created.getId())
+                );
 
-        try {
-            kafkaTemplate.send(KAFKA_TOPIC, "test_key", "test_data").get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
+                return null;
+            }
         }
 
-        return itemRepository.save(created);
+        return created;
     }
 
     @Override
