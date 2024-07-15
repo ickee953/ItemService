@@ -41,7 +41,7 @@ public class Item extends AbstractEntity<ItemDto> {
                         getId(),
                         getTitle(),
                         getDescription(),
-                        category.stream().map(Category::forResponse).toList()
+                        category != null ? category.stream().map(Category::forResponse).toList() : null
                 );
         }
 }
