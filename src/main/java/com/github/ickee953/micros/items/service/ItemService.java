@@ -58,16 +58,13 @@ public class ItemService implements EntityService<Item, ItemUploadDto> {
                         .setCategory( categories )
         );
 
-        if( item instanceof ItemUploadDto ){
-            try {
-                kafkaTemplate.send(KAFKA_TOPIC, created.getId().toString(), item.getPicture()).get();
-            } catch (InterruptedException | ExecutionException e) {
-                log.error(String.format(
-                        "Kafka send message error in topic: %s with key: %s", KAFKA_TOPIC, created.getId())
-                );
+        try {
+            kafkaTemplate.send(KAFKA_TOPIC, created.getId().toString(), item.getPicture()).get();
+        } catch (InterruptedException | ExecutionException e) {
+            log.error(String.format("Kafka send message error in topic: %s with key: %s",
+                    KAFKA_TOPIC, created.getId()));
 
-                return null;
-            }
+            return null;
         }
 
         return created;

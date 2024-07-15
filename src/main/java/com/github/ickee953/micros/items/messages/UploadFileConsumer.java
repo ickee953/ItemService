@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -24,8 +23,8 @@ public class UploadFileConsumer {
 
     private final ItemRepository itemRepository;
 
-    @KafkaListener(topics = {"file-upload-topic"})
-    public void uploaded(ConsumerRecord<UUID, MultipartFile> record) {
+    @KafkaListener(topics = {"file-uploaded-topic"})
+    public void uploaded(ConsumerRecord<UUID, String> record) {
         log.info("received message : {}", record);
         //todo update file path for returned id
         //UUID id =
