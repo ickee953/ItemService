@@ -36,6 +36,8 @@ public class CategoryService implements RelationEntityService<Category, ItemDto>
 
     public Collection<Category> getForObject(ItemDto item) {
 
+        if( item.getCategories() == null ) return null;
+
         return categoryRepository.findAllById(item.getCategories().stream().map(CategoryDto::getId).toList());
 
     }
