@@ -7,19 +7,22 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.UUID;
 
 @Configuration
 public class KafkaConfig {
 
     @Bean
-    public ProducerFactory<String, String> producerFactory(KafkaProperties properties) {
+    public ProducerFactory<UUID, MultipartFile> producerFactory(KafkaProperties properties) {
         return new DefaultKafkaProducerFactory<>(properties.buildProducerProperties(
                 new DefaultSslBundleRegistry()
         ));
     }
 
     @Bean
-    public KafkaTemplate<String, String> kafkaTemplate(ProducerFactory<String, String> factory) {
+    public KafkaTemplate<UUID, MultipartFile> kafkaTemplate(ProducerFactory<UUID, MultipartFile> factory) {
         return new KafkaTemplate<>(factory);
     }
 
