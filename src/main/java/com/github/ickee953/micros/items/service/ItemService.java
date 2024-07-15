@@ -21,6 +21,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
@@ -36,8 +37,8 @@ public class ItemService implements EntityService<Item, ItemUploadDto> {
 
     private final CategoryService categoryService;
 
-    private final KafkaTemplate<String, MultipartFile> kafkaTemplate;
-    
+    private final KafkaTemplate<String, byte[]> kafkaTemplate;
+
     private static final String KAFKA_TOPIC = "file-upload-topic";
 
     @Override
@@ -58,13 +59,18 @@ public class ItemService implements EntityService<Item, ItemUploadDto> {
                         .setCategory( categories )
         );
 
+        if(files == null || files.isEmpty()) return created;
+
         try {
-            kafkaTemplate.send(KAFKA_TOPIC, created.getId().toString(), item.getPicture()).get();
+            byte[] picture = files.get(0).getBytes();
+            kafkaTemplate.send(KAFKA_TOPIC, created.getId().toString(), picture ).get();
         } catch (InterruptedException | ExecutionException e) {
             log.error(String.format("Kafka send message error in topic: %s with key: %s",
                     KAFKA_TOPIC, created.getId()));
 
             return null;
+        } catch (IOException e) {
+            log.error(String.format("Failed to get file from request: %s", e.getLocalizedMessage()));
         }
 
         return created;

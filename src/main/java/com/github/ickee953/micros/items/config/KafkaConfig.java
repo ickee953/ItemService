@@ -13,14 +13,14 @@ import org.springframework.web.multipart.MultipartFile;
 public class KafkaConfig {
 
     @Bean
-    public ProducerFactory<String, MultipartFile> producerFactory(KafkaProperties properties) {
+    public ProducerFactory<String, byte[]> producerFactory(KafkaProperties properties) {
         return new DefaultKafkaProducerFactory<>(properties.buildProducerProperties(
                 new DefaultSslBundleRegistry()
         ));
     }
 
     @Bean
-    public KafkaTemplate<String, MultipartFile> kafkaTemplate(ProducerFactory<String, MultipartFile> factory) {
+    public KafkaTemplate<String, byte[]> kafkaTemplate(ProducerFactory<String, byte[]> factory) {
         return new KafkaTemplate<>(factory);
     }
 
