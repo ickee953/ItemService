@@ -30,13 +30,13 @@ import static com.github.ickee953.micros.core.common.Status.REPLACED;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ItemService implements EntityService<Item, ItemDto> {
+public class ItemService implements EntityService<Item, ItemUploadDto> {
 
     private final ItemRepository itemRepository;
 
     private final CategoryService categoryService;
 
-    private final KafkaTemplate<UUID, MultipartFile> kafkaTemplate;
+    private final KafkaTemplate<String, MultipartFile> kafkaTemplate;
     
     private static final String KAFKA_TOPIC = "file-upload-topic";
 
@@ -47,7 +47,7 @@ public class ItemService implements EntityService<Item, ItemDto> {
 
     @Override
     @Transactional(rollbackOn = {InterruptedException.class, ExecutionException.class})
-    public Item create(ItemDto item) {
+    public Item create(ItemUploadDto item, List<MultipartFile> files) {
 
         Collection<Category> categories = categoryService.getForObject(item);
 
@@ -60,7 +60,7 @@ public class ItemService implements EntityService<Item, ItemDto> {
 
         if( item instanceof ItemUploadDto ){
             try {
-                kafkaTemplate.send(KAFKA_TOPIC, created.getId(), ((ItemUploadDto) item).getPicture()).get();
+                kafkaTemplate.send(KAFKA_TOPIC, created.getId().toString(), item.getPicture()).get();
             } catch (InterruptedException | ExecutionException e) {
                 log.error(String.format(
                         "Kafka send message error in topic: %s with key: %s", KAFKA_TOPIC, created.getId())
@@ -84,7 +84,7 @@ public class ItemService implements EntityService<Item, ItemDto> {
     }
 
     @Override
-    public Result<Item> replace(UUID id, ItemDto newItem) {
+    public Result<Item> replace(UUID id, ItemUploadDto newItem) {
 
         Collection<Category> categories = categoryService.getForObject(newItem);
 

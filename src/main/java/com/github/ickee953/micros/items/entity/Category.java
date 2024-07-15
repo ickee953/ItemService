@@ -25,7 +25,7 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "category")
-public class Category extends AbstractEntity<CategoryDto> {
+public class Category extends AbstractEntity {
 
         @Column(name = "title", unique = true)
         private String title;

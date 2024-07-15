@@ -22,12 +22,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.Serializable;
 import java.util.*;
 
 @RequiredArgsConstructor
-public abstract class CrudController<T extends AbstractEntity<D>, D extends AbstractDto> {
+public abstract class CrudController<T extends AbstractEntity, D extends AbstractDto> {
 
     private final EntityService<T, D> entityService;
 
@@ -35,12 +37,12 @@ public abstract class CrudController<T extends AbstractEntity<D>, D extends Abst
     protected MessageSource messageSource;
 
     @GetMapping
-    public ResponseEntity<Iterable<D>> all() {
+    public ResponseEntity<Iterable<?>> all() {
         Iterable<T> items = entityService.getAll();
 
         if( items != null ) {
 
-            List<D> responseList = new LinkedList<>();
+            List<Serializable> responseList = new LinkedList<>();
             items.forEach(entity -> responseList.add(entity.forResponse()));
 
             return ResponseEntity.ok(responseList);
@@ -52,7 +54,8 @@ public abstract class CrudController<T extends AbstractEntity<D>, D extends Abst
 
     @PostMapping
     public ResponseEntity<?> create(
-            @Valid @RequestBody D dto,
+            @Valid @RequestPart(required = true, name = "object") D dto,
+            @RequestPart(required = false, name = "files") List<MultipartFile> files,
             BindingResult bindingResult, Locale locale
     ) {
         if( bindingResult.hasErrors() ) {
@@ -68,7 +71,7 @@ public abstract class CrudController<T extends AbstractEntity<D>, D extends Abst
             return ResponseEntity.badRequest()
                     .body(problemDetail);
         } else {
-            T created = entityService.create(dto);
+            T created = entityService.create(dto, files);
 
             return ResponseEntity
                     .created(
@@ -124,7 +127,7 @@ public abstract class CrudController<T extends AbstractEntity<D>, D extends Abst
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<D> get(@PathVariable("id") UUID id) {
+    public ResponseEntity<?> get(@PathVariable("id") UUID id) {
 
         Optional<T> entity = entityService.get(id);
 

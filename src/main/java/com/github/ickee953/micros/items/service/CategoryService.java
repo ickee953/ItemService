@@ -17,8 +17,10 @@ import com.github.ickee953.micros.items.entity.Category;
 import com.github.ickee953.micros.items.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -44,7 +46,7 @@ public class CategoryService implements RelationEntityService<Category, ItemDto>
     }
 
     @Override
-    public Category create(CategoryDto category) {
+    public Category create(CategoryDto category, List<MultipartFile> files) {
 
         Category newCategory = new Category()
                 .setTitle(category.getTitle()

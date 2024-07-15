@@ -10,15 +10,17 @@ package com.github.ickee953.micros.core.service;
 import com.github.ickee953.micros.core.entity.AbstractDto;
 import com.github.ickee953.micros.core.entity.AbstractEntity;
 import com.github.ickee953.micros.core.common.Result;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface EntityService<T extends AbstractEntity<D>, D extends AbstractDto> {
+public interface EntityService<T extends AbstractEntity, D extends AbstractDto> {
 
     Iterable<T> getAll();
 
-    T create(D object);
+    T create(D object, List<MultipartFile> files);
 
     Optional<T> get(UUID id);
 

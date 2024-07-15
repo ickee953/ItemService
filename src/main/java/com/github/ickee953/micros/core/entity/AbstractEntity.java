@@ -12,12 +12,13 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
 @MappedSuperclass
-public abstract class AbstractEntity<D extends AbstractDto> {
+public abstract class AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,5 +32,5 @@ public abstract class AbstractEntity<D extends AbstractDto> {
     @Column(name = "updated", nullable = false)
     private LocalDateTime updated;
 
-    public abstract D forResponse();
+    public abstract Serializable forResponse();
 }

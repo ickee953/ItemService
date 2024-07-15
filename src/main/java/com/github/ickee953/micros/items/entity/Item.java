@@ -9,6 +9,7 @@ package com.github.ickee953.micros.items.entity;
 
 import com.github.ickee953.micros.core.entity.AbstractEntity;
 import com.github.ickee953.micros.items.dto.ItemDto;
+import com.github.ickee953.micros.items.dto.ItemUploadDto;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,7 +22,7 @@ import java.util.Collection;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Table(name = "item")
-public class Item extends AbstractEntity<ItemDto> {
+public class Item extends AbstractEntity {
 
         @Column(name = "title")
         private String title;
