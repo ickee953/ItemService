@@ -47,7 +47,7 @@ public class ItemService implements EntityService<Item, ItemUploadDto> {
     }
 
     @Override
-    @Transactional(rollbackOn = {InterruptedException.class, ExecutionException.class})
+    @Transactional
     public Item create(ItemUploadDto item, List<MultipartFile> files) {
 
         Collection<Category> categories = categoryService.getForObject(item);

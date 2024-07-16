@@ -8,6 +8,7 @@
 package com.github.ickee953.micros.items.messages;
 
 import com.github.ickee953.micros.items.repository.ItemRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -24,11 +25,11 @@ public class UploadFileConsumer {
     private final ItemRepository itemRepository;
 
     @KafkaListener(topics = {"file-uploaded-topic"})
-    public void uploaded(ConsumerRecord<UUID, String> record) {
+    @Transactional
+    public void uploaded(ConsumerRecord<String, String> record) {
         log.info("received message : {}", record);
-        //todo update file path for returned id
-        //UUID id =
-        //itemRepository.findById(id).
+        itemRepository.findById(UUID.fromString(record.key())).orElseThrow()
+                .setTitlePic(record.value());
     }
 
 }

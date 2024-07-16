@@ -29,6 +29,8 @@ public class ItemDto extends AbstractDto {
     @Size(max = 1000, message = "{errors.description.size}")
     private String description;
 
+    private String titlePic;
+
     private List<CategoryDto> categories;
 
     public ItemDto(String title, String description) {
@@ -38,11 +40,12 @@ public class ItemDto extends AbstractDto {
         setDescription(description);
     }
 
-    public ItemDto(UUID id, String title, String description, List<CategoryDto> catgories) {
+    public ItemDto(UUID id, String title, String description, String titlePic, List<CategoryDto> catgories) {
         super();
 
         setId(id);
         setTitle(title);
+        setTitlePic(titlePic);
         setDescription(description);
         setCategories(catgories);
     }
