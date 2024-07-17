@@ -24,7 +24,7 @@ public class UploadFileConsumer {
 
     private final ItemRepository itemRepository;
 
-    @KafkaListener(topics = {"file-uploaded-topic"})
+    @KafkaListener(topics = {"${app.kafka.topic.file-uploaded}"})
     @Transactional
     public void uploaded(ConsumerRecord<String, String> record) {
         log.info("received message : {}", record);

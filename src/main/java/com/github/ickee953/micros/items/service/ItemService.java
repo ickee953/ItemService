@@ -17,6 +17,7 @@ import com.github.ickee953.micros.core.common.Result;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,7 +40,8 @@ public class ItemService implements EntityService<Item, ItemUploadDto> {
 
     private final KafkaTemplate<String, byte[]> kafkaTemplate;
 
-    private static final String KAFKA_TOPIC = "file-upload-topic";
+    @Value("${app.kafka.topic.file-upload}")
+    private String fileUploadTopic;
 
     @Override
     public Collection<Item> getAll() {
@@ -63,10 +65,10 @@ public class ItemService implements EntityService<Item, ItemUploadDto> {
 
         try {
             byte[] picture = files.get(0).getBytes();
-            kafkaTemplate.send(KAFKA_TOPIC, created.getId().toString(), picture ).get();
+            kafkaTemplate.send(fileUploadTopic, created.getId().toString(), picture ).get();
         } catch (InterruptedException | ExecutionException e) {
             log.error(String.format("Kafka send message error in topic: %s with key: %s",
-                    KAFKA_TOPIC, created.getId()));
+                    fileUploadTopic, created.getId()));
 
             return null;
         } catch (IOException e) {
