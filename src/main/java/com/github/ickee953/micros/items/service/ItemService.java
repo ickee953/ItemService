@@ -24,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 
 import static com.github.ickee953.micros.core.common.Status.CREATED;
 import static com.github.ickee953.micros.core.common.Status.REPLACED;
@@ -38,10 +37,7 @@ public class ItemService implements EntityService<Item, ItemUploadDto> {
 
     private final CategoryService categoryService;
 
-    private final KafkaTemplate<String, byte[]> kafkaTemplate;
-
-    @Value("${app.kafka.topic.file-upload}")
-    private String fileUploadTopic;
+    private final ItemPictureService itemPictureService;
 
     @Override
     public Collection<Item> getAll() {
@@ -65,12 +61,7 @@ public class ItemService implements EntityService<Item, ItemUploadDto> {
 
         try {
             byte[] picture = files.get(0).getBytes();
-            kafkaTemplate.send(fileUploadTopic, created.getId().toString(), picture ).get();
-        } catch (InterruptedException | ExecutionException e) {
-            log.error(String.format("Kafka send message error in topic: %s with key: %s",
-                    fileUploadTopic, created.getId()));
-
-            return null;
+            itemPictureService.send(created.getId().toString(), picture);
         } catch (IOException e) {
             log.error(String.format("Failed to get file from request: %s", e.getLocalizedMessage()));
         }
