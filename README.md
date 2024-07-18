@@ -20,6 +20,7 @@ After that you also need to run postgresql with seettings from db-compose-env.ya
 PictureService and ItemService has [Apache Kafka](https://kafka.apache.org/quickstart) service that can produce and consume picure files. Apache Kafka can be started using ZooKeeper. To get started with either configuration follow below.
 
 Download, extract from [here](https://www.apache.org/dyn/closer.cgi?path=/kafka/3.7.1/kafka_2.13-3.7.1.tgz) and run the following commands in order to start all services in the correct order:
+  
   6. $ tar -xzf kafka_2.13-3.7.1.tgz
   7. $ cd kafka_2.13-3.7.1
   8. $ ./bin/zookeeper-server-start.sh config/zookeeper.properties
