@@ -15,6 +15,7 @@ For PictureService:
   4. $ docker build -t picture-api . && docker run picture-api
      
 After that you also need to run postgresql with seettings from db-compose-env.yaml:
+
   5. $ docker-compose -f db-compose-env.yaml up
 
 PictureService and ItemService has [Apache Kafka](https://kafka.apache.org/quickstart) service that can produce and consume picure files. Apache Kafka can be started using ZooKeeper. To get started with either configuration follow below.
