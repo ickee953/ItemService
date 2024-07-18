@@ -1,6 +1,6 @@
 # ItemService
 
-First of all you need to deploy StorageService and PictureService:
+First of all you need to deploy [StorageService](https://github.com/ickee953/StorageService) and [PictureService](https://github.com/ickee953/PictureService):
 
 For StorageService:
   1. $ git clone https://github.com/ickee953/StorageService.git
